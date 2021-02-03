@@ -13,6 +13,13 @@ const server = http.createServer(app);
 const io = socketio(server);
 app.use(cors());
 app.use(express.static(__dirname + "/build"));
+app.get("/*", function (req, res) {
+  res.sendFile(__dirname + "/build", function (err) {
+    if (err) {
+      res.status(500).send(err);
+    }
+  });
+});
 io.on("connection", (socket) => {
   socket.on("join", ({ name, room }, callback) => {
     const { error, user } = addUser({ id: socket.id, name, room });
